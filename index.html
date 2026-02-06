@@ -23,6 +23,7 @@
                     <li><a href="#projects">PROJECTS</a></li>
                     <li><a href="#resume">RESUME</a></li>
                     <li><a href="#contact">CONTACT</a></li>
+                    <li><a href="http://localhost:3000/admin" target="_blank">ADMIN</a></li>
                 </ul>
             </div>
         </nav>
@@ -216,13 +217,14 @@
                     </div>
                 </div>
                 <div class="contact-form">
-                    <form>
-                        <input type="text" placeholder="Your Name" required>
-                        <input type="email" placeholder="Your Email" required>
-                        <input type="text" placeholder="Subject" required>
-                        <textarea placeholder="Your Message" rows="5" required></textarea>
+                    <form id="contactForm">
+                        <input type="text" name="name" placeholder="Your Name" required>
+                        <input type="email" name="email" placeholder="Your Email" required>
+                        <input type="text" name="subject" placeholder="Subject" required>
+                        <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
                         <button type="submit" class="btn btn-primary">Send Message</button>
                     </form>
+                    <div id="formMessage" style="margin-top: 15px; padding: 10px; border-radius: 5px; display: none;"></div>
                 </div>
             </div>
         </div>
@@ -243,5 +245,52 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // Contact form submission
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                name: e.target.name.value,
+                email: e.target.email.value,
+                subject: e.target.subject.value,
+                message: e.target.message.value
+            };
+            
+            const messageDiv = document.getElementById('formMessage');
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/contact', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    messageDiv.style.display = 'block';
+                    messageDiv.style.background = '#d4edda';
+                    messageDiv.style.color = '#155724';
+                    messageDiv.textContent = '✅ Message sent successfully! I will contact you soon.';
+                    e.target.reset();
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                messageDiv.style.display = 'block';
+                messageDiv.style.background = '#f8d7da';
+                messageDiv.style.color = '#721c24';
+                messageDiv.textContent = '❌ Failed to send message. Please try again or email directly.';
+            }
+            
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        });
+    </script>
 </body>
 </html>
