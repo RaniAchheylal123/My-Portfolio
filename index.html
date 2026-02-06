@@ -6,6 +6,7 @@
     <title>Rani Kumari - Frontend Developer Portfolio</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 <body>
     <!-- Header Section -->
@@ -23,7 +24,6 @@
                     <li><a href="#projects">PROJECTS</a></li>
                     <li><a href="#resume">RESUME</a></li>
                     <li><a href="#contact">CONTACT</a></li>
-                    <li><a href="http://localhost:3000/admin" target="_blank">ADMIN</a></li>
                 </ul>
             </div>
         </nav>
@@ -218,8 +218,8 @@
                 </div>
                 <div class="contact-form">
                     <form id="contactForm">
-                        <input type="text" name="name" placeholder="Your Name" required>
-                        <input type="email" name="email" placeholder="Your Email" required>
+                        <input type="text" name="from_name" placeholder="Your Name" required>
+                        <input type="email" name="from_email" placeholder="Your Email" required>
                         <input type="text" name="subject" placeholder="Subject" required>
                         <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
                         <button type="submit" class="btn btn-primary">Send Message</button>
@@ -247,49 +247,50 @@
     </footer>
 
     <script>
+        // Initialize EmailJS
+        emailjs.init('YOUR_PUBLIC_KEY'); // Replace with your EmailJS public key
+        
         // Contact form submission
-        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const formData = {
-                name: e.target.name.value,
-                email: e.target.email.value,
-                subject: e.target.subject.value,
-                message: e.target.message.value
-            };
-            
             const messageDiv = document.getElementById('formMessage');
+            const submitBtn = e.target.querySelector('button[type="submit"]');
             
-            try {
-                const response = await fetch('http://localhost:3000/api/contact', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
-                
-                const result = await response.json();
-                
-                if (response.ok) {
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            
+            // Send email using EmailJS
+            emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', this)
+                .then(function(response) {
                     messageDiv.style.display = 'block';
                     messageDiv.style.background = '#d4edda';
                     messageDiv.style.color = '#155724';
                     messageDiv.textContent = '✅ Message sent successfully! I will contact you soon.';
                     e.target.reset();
-                } else {
-                    throw new Error(result.error);
-                }
-            } catch (error) {
-                messageDiv.style.display = 'block';
-                messageDiv.style.background = '#f8d7da';
-                messageDiv.style.color = '#721c24';
-                messageDiv.textContent = '❌ Failed to send message. Please try again or email directly.';
-            }
-            
-            setTimeout(() => {
-                messageDiv.style.display = 'none';
-            }, 5000);
+                    
+                    // Re-enable button
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Send Message';
+                    
+                    setTimeout(() => {
+                        messageDiv.style.display = 'none';
+                    }, 5000);
+                }, function(error) {
+                    messageDiv.style.display = 'block';
+                    messageDiv.style.background = '#f8d7da';
+                    messageDiv.style.color = '#721c24';
+                    messageDiv.textContent = '❌ Failed to send message. Please email directly at rani.kumari520527@gmail.com';
+                    
+                    // Re-enable button
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Send Message';
+                    
+                    setTimeout(() => {
+                        messageDiv.style.display = 'none';
+                    }, 5000);
+                });
         });
     </script>
 </body>
