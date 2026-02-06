@@ -6,7 +6,6 @@
     <title>Rani Kumari - Frontend Developer Portfolio</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 <body>
     <!-- Header Section -->
@@ -217,10 +216,14 @@
                     </div>
                 </div>
                 <div class="contact-form">
-                    <form id="contactForm">
-                        <input type="text" name="from_name" placeholder="Your Name" required>
-                        <input type="email" name="from_email" placeholder="Your Email" required>
-                        <input type="text" name="subject" placeholder="Subject" required>
+                    <form action="https://api.web3forms.com/submit" method="POST" id="contactForm">
+                        <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
+                        <input type="hidden" name="subject" value="New Contact from Portfolio">
+                        <input type="hidden" name="redirect" value="https://web3forms.com/success">
+                        
+                        <input type="text" name="name" placeholder="Your Name" required>
+                        <input type="email" name="email" placeholder="Your Email" required>
+                        <input type="text" name="subject_custom" placeholder="Subject" required>
                         <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
                         <button type="submit" class="btn btn-primary">Send Message</button>
                     </form>
@@ -243,50 +246,47 @@
                     <a href="https://www.linkedin.com/" target="_blank"><i class="fab fa-linkedin"></i></a>
                 </div>
             </div>
-        </div>
-    </footer>
-
-    <script>
-        // Initialize EmailJS
-        emailjs.init('YOUR_PUBLIC_KEY'); // Replace with your EmailJS public key
+        const form = document.getElementById('contactForm');
+        const messageDiv = document.getElementById('formMessage');
         
-        // Contact form submission
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const messageDiv = document.getElementById('formMessage');
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            
-            // Disable button and show loading
+            const submitBtn = form.querySelector('button[type="submit"]');
             submitBtn.disabled = true;
             submitBtn.textContent = 'Sending...';
             
-            // Send email using EmailJS
-            emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', this)
-                .then(function(response) {
+            const formData = new FormData(form);
+            
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
                     messageDiv.style.display = 'block';
                     messageDiv.style.background = '#d4edda';
                     messageDiv.style.color = '#155724';
                     messageDiv.textContent = '✅ Message sent successfully! I will contact you soon.';
-                    e.target.reset();
-                    
-                    // Re-enable button
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'Send Message';
-                    
-                    setTimeout(() => {
-                        messageDiv.style.display = 'none';
-                    }, 5000);
-                }, function(error) {
-                    messageDiv.style.display = 'block';
-                    messageDiv.style.background = '#f8d7da';
-                    messageDiv.style.color = '#721c24';
-                    messageDiv.textContent = '❌ Failed to send message. Please email directly at rani.kumari520527@gmail.com';
-                    
-                    // Re-enable button
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'Send Message';
-                    
+                    form.reset();
+                } else {
+                    throw new Error('Failed to send');
+                }
+            })
+            .catch(error => {
+                messageDiv.style.display = 'block';
+                messageDiv.style.background = '#f8d7da';
+                messageDiv.style.color = '#721c24';
+                messageDiv.textContent = '❌ Failed to send message. Please email directly at rani.kumari520527@gmail.com';
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Message';
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 5000);
+                
                     setTimeout(() => {
                         messageDiv.style.display = 'none';
                     }, 5000);

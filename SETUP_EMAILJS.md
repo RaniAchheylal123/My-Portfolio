@@ -1,42 +1,30 @@
-# EmailJS Setup Guide
+# Contact Form Setup - Web3Forms
 
-Contact form ko bina backend ke kaam karne ke liye EmailJS setup karo:
+Contact form ko activate karne ke liye bas 2 minute:
 
 ## Steps:
 
-### 1. EmailJS Account Banao
-- Go to: https://www.emailjs.com/
-- Sign up for FREE account
+### 1. Web3Forms Account Banao (FREE)
+- Go to: https://web3forms.com/
+- Click "Get Started Free"
+- Sign up with email: **rani.kumari520527@gmail.com**
 
-### 2. Email Service Add Karo
-- Dashboard me jao
-- "Add New Service" click karo
-- Gmail select karo aur connect karo
+### 2. Access Key Copy Karo
+- Login ke baad dashboard me access key dikhega
+- Access key copy karo (example: "a1b2c3d4-e5f6-7890-abcd-efghijklmnop")
 
-### 3. Email Template Banao
-- "Email Templates" me jao
-- "Create New Template" click karo
-- Template content:
-```
-From: {{from_name}}
-Email: {{from_email}}
-Subject: {{subject}}
+### 3. Index.html Update Karo
+- Line 227: `YOUR_ACCESS_KEY_HERE` ko apni access key se replace karo
+- Save and push to GitHub
 
-Message:
-{{message}}
-```
-- Save karo aur Template ID copy karo
+### 4. Done! 🎉
+Ab contact form fully working hai!
 
-### 4. Public Key Copy Karo
-- Account settings me jao
-- Public Key copy karo
+## Features:
+- ✅ Messages directly email par aayenge
+- ✅ Automatic email notifications
+- ✅ No backend needed
+- ✅ Git clone ke baad seedha kaam karega
+- ✅ Form data safe and secure
 
-### 5. Index.html Update Karo
-- Line 283: `YOUR_PUBLIC_KEY` ko apni public key se replace karo
-- Line 296: `YOUR_SERVICE_ID` ko apni service ID se replace karo
-- Line 296: `YOUR_TEMPLATE_ID` ko apni template ID se replace karo
-
-### 6. Done!
-Ab git clone ke baad bhi contact form seedha kaam karega!
-
-Messages directly apke email par aayenge: rani.kumari520527@gmail.com
+Messages directly apke email par aayenge: **rani.kumari520527@gmail.com**
